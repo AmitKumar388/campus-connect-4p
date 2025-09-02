@@ -1,0 +1,169 @@
+import { ReactNode, useState } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sidebar } from '@/components/layout/Sidebar';
+import { Header } from '@/components/layout/Header';
+import { Menu, Bell, MessageSquare } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
+
+interface AppLayoutProps {
+  children?: ReactNode;
+}
+
+const AppLayout = ({ children }: AppLayoutProps) => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // Check if user is logged in
+  const userStr = localStorage.getItem('campusConnectUser');
+  const user = userStr ? JSON.parse(userStr) : null;
+
+  if (!user) {
+    navigate('/login');
+    return null;
+  }
+
+  const handleNotificationClick = () => {
+    toast({
+      title: "Notifications",
+      description: "You have 3 new notifications",
+    });
+  };
+
+  const handleMessagesClick = () => {
+    toast({
+      title: "Messages",
+      description: "You have 2 unread messages",
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-background academic-pattern">
+      {/* Mobile Sidebar */}
+      <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+        <SheetTrigger asChild>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="lg:hidden fixed top-4 left-4 z-50 bg-card shadow-md hover:shadow-lg transition-all"
+          >
+            <Menu className="h-6 w-6" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="p-0 w-80">
+          <Sidebar user={user} />
+        </SheetContent>
+      </Sheet>
+
+      {/* Desktop Layout */}
+      <div className="lg:flex">
+        {/* Desktop Sidebar */}
+        <div className="hidden lg:block w-80 fixed inset-y-0 z-30">
+          <Sidebar user={user} />
+        </div>
+
+        {/* Main Content */}
+        <div className="lg:ml-80 flex-1">
+          {/* Header */}
+          <Header user={user} />
+          
+          {/* Quick Action Bar */}
+          <div className="sticky top-16 z-20 bg-background/80 backdrop-blur-sm border-b border-border px-4 py-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                <span className="text-sm text-muted-foreground">
+                  System Status: All services operational
+                </span>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={handleNotificationClick}
+                  className="relative hover:bg-primary/10"
+                >
+                  <Bell className="w-4 h-4" />
+                  <Badge variant="destructive" className="absolute -top-1 -right-1 w-5 h-5 text-xs p-0 flex items-center justify-center">
+                    3
+                  </Badge>
+                </Button>
+                
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={handleMessagesClick}
+                  className="relative hover:bg-primary/10"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <Badge variant="secondary" className="absolute -top-1 -right-1 w-5 h-5 text-xs p-0 flex items-center justify-center">
+                    2
+                  </Badge>
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Page Content */}
+          <main className="p-6 pt-4">
+            <div className="animate-fade-in-up">
+              {children || <Outlet />}
+            </div>
+          </main>
+
+          {/* Footer */}
+          <footer className="border-t border-border bg-card/50 px-6 py-8 mt-12">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div>
+                <h3 className="font-semibold mb-4 text-foreground">CampusConnect</h3>
+                <p className="text-sm text-muted-foreground">
+                  Empowering educational excellence through innovative technology solutions.
+                </p>
+              </div>
+              
+              <div>
+                <h4 className="font-medium mb-3 text-foreground">Quick Links</h4>
+                <ul className="space-y-2 text-sm">
+                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Academic Calendar</a></li>
+                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Student Portal</a></li>
+                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Faculty Resources</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 className="font-medium mb-3 text-foreground">Support</h4>
+                <ul className="space-y-2 text-sm">
+                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Help Center</a></li>
+                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">IT Support</a></li>
+                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Contact Us</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 className="font-medium mb-3 text-foreground">Connect</h4>
+                <ul className="space-y-2 text-sm">
+                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Campus Updates</a></li>
+                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Announcements</a></li>
+                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">News & Events</a></li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="border-t border-border mt-8 pt-6 text-center">
+              <p className="text-sm text-muted-foreground">
+                © 2024 CampusConnect ERP. All rights reserved. | Version 2.1.0
+              </p>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AppLayout;

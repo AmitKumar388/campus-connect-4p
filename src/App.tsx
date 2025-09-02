@@ -4,6 +4,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
+import Login from "./pages/Login";
+import AppLayout from "./components/layout/AppLayout";
+import PrincipalDashboard from "./pages/dashboards/PrincipalDashboard";
+import StudentDashboard from "./pages/dashboards/StudentDashboard";
+import FacultyDashboard from "./pages/dashboards/FacultyDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -16,7 +21,47 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/login" element={<Login />} />
+          
+          {/* Protected Dashboard Routes */}
+          <Route path="/dashboard/*" element={<AppLayout />}>
+            <Route path="principal" element={<PrincipalDashboard />} />
+            <Route path="hod" element={<div className="p-6 text-center text-muted-foreground">HOD Dashboard - Coming Soon</div>} />
+            <Route path="faculty" element={<FacultyDashboard />} />
+            <Route path="student" element={<StudentDashboard />} />
+            <Route path="admin" element={<div className="p-6 text-center text-muted-foreground">Admin Dashboard - Coming Soon</div>} />
+            <Route path="accountant" element={<div className="p-6 text-center text-muted-foreground">Accountant Dashboard - Coming Soon</div>} />
+          </Route>
+          
+          {/* Feature Pages */}
+          <Route element={<AppLayout />}>
+            <Route path="/profile" element={<div className="p-6 text-center text-muted-foreground">Profile Page - Coming Soon</div>} />
+            <Route path="/settings" element={<div className="p-6 text-center text-muted-foreground">Settings Page - Coming Soon</div>} />
+            <Route path="/analytics" element={<div className="p-6 text-center text-muted-foreground">Analytics Page - Coming Soon</div>} />
+            <Route path="/manage-users" element={<div className="p-6 text-center text-muted-foreground">User Management - Coming Soon</div>} />
+            <Route path="/system-logs" element={<div className="p-6 text-center text-muted-foreground">System Logs - Coming Soon</div>} />
+            <Route path="/department-staff" element={<div className="p-6 text-center text-muted-foreground">Department Staff - Coming Soon</div>} />
+            <Route path="/subject-assignment" element={<div className="p-6 text-center text-muted-foreground">Subject Assignment - Coming Soon</div>} />
+            <Route path="/student-management" element={<div className="p-6 text-center text-muted-foreground">Student Management - Coming Soon</div>} />
+            <Route path="/upload-materials" element={<div className="p-6 text-center text-muted-foreground">Upload Materials - Coming Soon</div>} />
+            <Route path="/qr-attendance" element={<div className="p-6 text-center text-muted-foreground">QR Attendance - Coming Soon</div>} />
+            <Route path="/ai-predictions" element={<div className="p-6 text-center text-muted-foreground">AI Predictions - Coming Soon</div>} />
+            <Route path="/student-queries" element={<div className="p-6 text-center text-muted-foreground">Student Queries - Coming Soon</div>} />
+            <Route path="/my-courses" element={<div className="p-6 text-center text-muted-foreground">My Courses - Coming Soon</div>} />
+            <Route path="/class-schedule" element={<div className="p-6 text-center text-muted-foreground">Class Schedule - Coming Soon</div>} />
+            <Route path="/my-attendance" element={<div className="p-6 text-center text-muted-foreground">My Attendance - Coming Soon</div>} />
+            <Route path="/fee-payment" element={<div className="p-6 text-center text-muted-foreground">Fee Payment - Coming Soon</div>} />
+            <Route path="/mou-requests" element={<div className="p-6 text-center text-muted-foreground">MoU Requests - Coming Soon</div>} />
+            <Route path="/ai-recommendations" element={<div className="p-6 text-center text-muted-foreground">AI Recommendations - Coming Soon</div>} />
+            <Route path="/document-management" element={<div className="p-6 text-center text-muted-foreground">Document Management - Coming Soon</div>} />
+            <Route path="/file-storage" element={<div className="p-6 text-center text-muted-foreground">File Storage - Coming Soon</div>} />
+            <Route path="/fee-management" element={<div className="p-6 text-center text-muted-foreground">Fee Management - Coming Soon</div>} />
+            <Route path="/payment-history" element={<div className="p-6 text-center text-muted-foreground">Payment History - Coming Soon</div>} />
+            <Route path="/ai-assistant" element={<div className="p-6 text-center text-muted-foreground">AI Assistant - Coming Soon</div>} />
+            <Route path="/help" element={<div className="p-6 text-center text-muted-foreground">Help & Support - Coming Soon</div>} />
+          </Route>
+          
+          {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
