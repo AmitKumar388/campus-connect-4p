@@ -9,6 +9,9 @@ import AppLayout from "./components/layout/AppLayout";
 import PrincipalDashboard from "./pages/dashboards/PrincipalDashboard";
 import StudentDashboard from "./pages/dashboards/StudentDashboard";
 import FacultyDashboard from "./pages/dashboards/FacultyDashboard";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
+import FeeManagement from "./pages/FeeManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,8 +38,9 @@ const App = () => (
           
           {/* Feature Pages */}
           <Route element={<AppLayout />}>
-            <Route path="/profile" element={<div className="p-6 text-center text-muted-foreground">Profile Page - Coming Soon</div>} />
-            <Route path="/settings" element={<div className="p-6 text-center text-muted-foreground">Settings Page - Coming Soon</div>} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/fee-management" element={<FeeManagement />} />
             <Route path="/analytics" element={<div className="p-6 text-center text-muted-foreground">Analytics Page - Coming Soon</div>} />
             <Route path="/manage-users" element={<div className="p-6 text-center text-muted-foreground">User Management - Coming Soon</div>} />
             <Route path="/system-logs" element={<div className="p-6 text-center text-muted-foreground">System Logs - Coming Soon</div>} />

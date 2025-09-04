@@ -7,6 +7,8 @@ import { Header } from '@/components/layout/Header';
 import { Menu, Bell, MessageSquare } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
+import { NotificationPopup } from '@/components/ui/notification-popup';
+import { MessagePopup } from '@/components/ui/message-popup';
 
 interface AppLayoutProps {
   children?: ReactNode;
@@ -14,6 +16,8 @@ interface AppLayoutProps {
 
 const AppLayout = ({ children }: AppLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [messageOpen, setMessageOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -28,17 +32,11 @@ const AppLayout = ({ children }: AppLayoutProps) => {
   }
 
   const handleNotificationClick = () => {
-    toast({
-      title: "Notifications",
-      description: "You have 3 new notifications",
-    });
+    setNotificationOpen(!notificationOpen);
   };
 
   const handleMessagesClick = () => {
-    toast({
-      title: "Messages",
-      description: "You have 2 unread messages",
-    });
+    setMessageOpen(!messageOpen);
   };
 
   return (
@@ -122,46 +120,59 @@ const AppLayout = ({ children }: AppLayoutProps) => {
               <div>
                 <h3 className="font-semibold mb-4 text-foreground">CampusConnect</h3>
                 <p className="text-sm text-muted-foreground">
-                  Empowering educational excellence through innovative technology solutions.
+                  भारतीय शिक्षा प्रणाली को आधुनिक तकनीक से सशक्त बनाना।
                 </p>
               </div>
               
               <div>
                 <h4 className="font-medium mb-3 text-foreground">Quick Links</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Academic Calendar</a></li>
-                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Student Portal</a></li>
-                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Faculty Resources</a></li>
+                  <li><button onClick={() => navigate('/class-schedule')} className="text-muted-foreground hover:text-primary transition-colors">Academic Calendar</button></li>
+                  <li><button onClick={() => navigate('/my-courses')} className="text-muted-foreground hover:text-primary transition-colors">Student Portal</button></li>
+                  <li><button onClick={() => navigate('/upload-materials')} className="text-muted-foreground hover:text-primary transition-colors">Faculty Resources</button></li>
+                  <li><button onClick={() => navigate('/document-management')} className="text-muted-foreground hover:text-primary transition-colors">Document Library</button></li>
                 </ul>
               </div>
               
               <div>
                 <h4 className="font-medium mb-3 text-foreground">Support</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Help Center</a></li>
-                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">IT Support</a></li>
-                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Contact Us</a></li>
+                  <li><button onClick={() => navigate('/help')} className="text-muted-foreground hover:text-primary transition-colors">Help Center</button></li>
+                  <li><button onClick={() => navigate('/ai-assistant')} className="text-muted-foreground hover:text-primary transition-colors">IT Support</button></li>
+                  <li><button onClick={() => navigate('/profile')} className="text-muted-foreground hover:text-primary transition-colors">Contact Us</button></li>
+                  <li><button onClick={() => navigate('/settings')} className="text-muted-foreground hover:text-primary transition-colors">Settings</button></li>
                 </ul>
               </div>
               
               <div>
                 <h4 className="font-medium mb-3 text-foreground">Connect</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Campus Updates</a></li>
-                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Announcements</a></li>
-                  <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">News & Events</a></li>
+                  <li><button onClick={() => navigate('/analytics')} className="text-muted-foreground hover:text-primary transition-colors">Campus Updates</button></li>
+                  <li><button onClick={() => navigate('/system-logs')} className="text-muted-foreground hover:text-primary transition-colors">Announcements</button></li>
+                  <li><button onClick={() => navigate('/fee-management')} className="text-muted-foreground hover:text-primary transition-colors">Fee Management</button></li>
+                  <li><button onClick={() => navigate('/qr-attendance')} className="text-muted-foreground hover:text-primary transition-colors">QR Attendance</button></li>
                 </ul>
               </div>
             </div>
             
             <div className="border-t border-border mt-8 pt-6 text-center">
               <p className="text-sm text-muted-foreground">
-                © 2024 CampusConnect ERP. All rights reserved. | Version 2.1.0
+                © 2024 CampusConnect ERP. सभी अधिकार सुरक्षित। | संस्करण 2.1.0
               </p>
             </div>
           </footer>
         </div>
       </div>
+      
+      {/* Popups */}
+      <NotificationPopup 
+        isOpen={notificationOpen} 
+        onClose={() => setNotificationOpen(false)} 
+      />
+      <MessagePopup 
+        isOpen={messageOpen} 
+        onClose={() => setMessageOpen(false)} 
+      />
     </div>
   );
 };
