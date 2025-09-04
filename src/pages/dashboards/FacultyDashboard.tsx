@@ -18,7 +18,6 @@ import {
   GraduationCap,
   Target
 } from 'lucide-react';
-
 const FacultyDashboard = () => {
   const quickStats = [
     { icon: BookOpen, label: 'Courses Teaching', value: '4', color: 'text-primary' },
@@ -35,10 +34,10 @@ const FacultyDashboard = () => {
   ];
 
   const studentQueries = [
-    { student: 'Sarah Johnson', query: 'Clarification on Database Normalization', course: 'DBMS', time: '2 hours ago', urgent: false },
-    { student: 'Mike Chen', query: 'Assignment submission deadline extension', course: 'DSA', time: '4 hours ago', urgent: true },
-    { student: 'Emma Davis', query: 'Concept doubt in Tree Traversal', course: 'DSA', time: '6 hours ago', urgent: false },
-    { student: 'Alex Rodriguez', query: 'Project topic discussion', course: 'ML', time: '1 day ago', urgent: false },
+    { student: 'Ansh Dubey', query: 'Clarification on Database Normalization', course: 'DBMS', time: '2 hours ago', urgent: false },
+    { student: 'Ramesh Kumar', query: 'Assignment submission deadline extension', course: 'DSA', time: '4 hours ago', urgent: true },
+    { student: 'Pankaj Sharma', query: 'Concept doubt in Tree Traversal', course: 'DSA', time: '6 hours ago', urgent: false },
+    { student: 'Aditya Dewangan', query: 'Project topic discussion', course: 'ML', time: '1 day ago', urgent: false },
   ];
 
   const classPerformance = [
@@ -54,7 +53,7 @@ const FacultyDashboard = () => {
       <div className="bg-gradient-hero rounded-2xl p-8 text-white">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Welcome Back, Dr. Emily Davis</h1>
+            <h1 className="text-3xl font-bold mb-2">Welcome Back, Dr. Ramesh Sharma</h1>
             <p className="text-white/80 text-lg">
               You have 4 classes scheduled today and 5 student queries waiting for your response.
             </p>

@@ -46,7 +46,7 @@ const PrincipalDashboard = () => {
       <div className="bg-gradient-hero rounded-2xl p-8 text-white">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Good Morning, Dr. Sarah Johnson</h1>
+            <h1 className="text-3xl font-bold mb-2">Good Morning, Dr. Anil Mehra</h1>
             <p className="text-white/80 text-lg">
               Welcome to your Principal Dashboard. Here's what's happening at your institute today.
             </p>

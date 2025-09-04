@@ -53,7 +53,7 @@ const StudentDashboard = () => {
       <div className="bg-gradient-hero rounded-2xl p-8 text-white">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Welcome Back, Alex Rodriguez</h1>
+            <h1 className="text-3xl font-bold mb-2">Welcome Back, Aarav Patel</h1>
             <p className="text-white/80 text-lg">
               Ready to continue your learning journey? You have 3 assignments due this week.
             </p>

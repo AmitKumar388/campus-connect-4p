@@ -51,12 +51,12 @@ const Login = () => {
 
   const getNameByRole = (role: string) => {
     const names = {
-      'Principal': 'Dr. Sarah Johnson',
-      'HOD': 'Prof. Michael Chen',
-      'Faculty': 'Dr. Emily Davis',
-      'Student': 'Alex Rodriguez',
-      'Admin': 'Robert Wilson',
-      'Accountant': 'Lisa Thompson'
+      'Principal': 'Dr. Anil Mehra',
+      'HOD': 'Prof. Kavita Iyer',
+      'Faculty': 'Dr. Ramesh Sharma',
+      'Student': 'Aarav Patel',
+      'Admin': 'Suresh Reddy',
+      'Accountant': 'Priya Nair'
     };
     return names[role as keyof typeof names] || 'User';
   };
@@ -195,17 +195,9 @@ const Login = () => {
                 Sign In
               </Button>
 
-              {/* Demo Credentials */}
-              <div className="mt-6 p-4 bg-muted/30 rounded-lg border">
-                <p className="text-sm font-medium mb-2">Demo Credentials:</p>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div>Email: demo@campus.edu</div>
-                  <div>Password: demo123</div>
-                </div>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Select any role and use these credentials
+                  Select any role and use these.
                 </p>
-              </div>
             </form>
           </CardContent>
         </Card>

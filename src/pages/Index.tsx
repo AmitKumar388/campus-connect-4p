@@ -43,9 +43,6 @@ const Index = () => {
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
           
-          <div className="text-sm text-muted-foreground">
-            Demo credentials: <strong>demo@campus.edu</strong> / <strong>demo123</strong>
-          </div>
         </div>
       </div>
     </div>

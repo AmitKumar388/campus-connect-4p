@@ -120,7 +120,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
               <div>
                 <h3 className="font-semibold mb-4 text-foreground">CampusConnect</h3>
                 <p className="text-sm text-muted-foreground">
-                  भारतीय शिक्षा प्रणाली को आधुनिक तकनीक से सशक्त बनाना।
+                  Empowering eductional excellence through technology innovative technology solutions.
                 </p>
               </div>
               
@@ -157,7 +157,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
             
             <div className="border-t border-border mt-8 pt-6 text-center">
               <p className="text-sm text-muted-foreground">
-                © 2024 CampusConnect ERP. सभी अधिकार सुरक्षित। | संस्करण 2.1.0
+                © 2024 CampusConnect ERP. All Rights Reserved | Version 2.1.0
               </p>
             </div>
           </footer>
