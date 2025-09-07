@@ -9,6 +9,9 @@ import AppLayout from "./components/layout/AppLayout";
 import PrincipalDashboard from "./pages/dashboards/PrincipalDashboard";
 import StudentDashboard from "./pages/dashboards/StudentDashboard";
 import FacultyDashboard from "./pages/dashboards/FacultyDashboard";
+import HODDashboard from "./pages/dashboards/HODDashboard";
+import AdminDashboard from "./pages/dashboards/AdminDashboard";
+import AccountantDashboard from "./pages/dashboards/AccountantDashboard";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import FeeManagement from "./pages/FeeManagement";
@@ -29,32 +32,11 @@ const App = () => (
           {/* Protected Dashboard Routes */}
           <Route path="/dashboard/*" element={<AppLayout />}>
             <Route path="principal" element={<PrincipalDashboard />} />
-            <Route
-              path="hod"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  HOD Dashboard - Coming Soon
-                </div>
-              }
-            />
+            <Route path="hod" element={<HODDashboard />} />
             <Route path="faculty" element={<FacultyDashboard />} />
             <Route path="student" element={<StudentDashboard />} />
-            <Route
-              path="admin"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Admin Dashboard - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="accountant"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Accountant Dashboard - Coming Soon
-                </div>
-              }
-            />
+            <Route path="admin" element={<AdminDashboard />} />
+            <Route path="accountant" element={<AccountantDashboard />} />
           </Route>
 
           {/* Feature Pages */}
@@ -62,22 +44,9 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/fee-management" element={<FeeManagement />} />
-            <Route
-              path="/analytics"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Analytics Page - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/manage-users"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  User Management - Coming Soon
-                </div>
-              }
-            />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/manage-users" element={<ManageUsers />} />
+            <Route path="/my-courses" element={<MyCourses />} />
             <Route
               path="/system-logs"
               element={
