@@ -16,6 +16,9 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import FeeManagement from "./pages/FeeManagement";
 import NotFound from "./pages/NotFound";
+import Analytics from "./pages/Analytics";
+import ManageUsers from "./pages/ManageUsers";
+import MyCourses from "./pages/MyCourses";  
 
 const queryClient = new QueryClient();
 
@@ -112,14 +115,6 @@ const App = () => (
               }
             />
             <Route
-              path="/my-courses"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  My Courses - Coming Soon
-                </div>
-              }
-            />
-            <Route
               path="/class-schedule"
               element={
                 <div className="p-6 text-center text-muted-foreground">
@@ -172,14 +167,6 @@ const App = () => (
               element={
                 <div className="p-6 text-center text-muted-foreground">
                   File Storage - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/fee-management"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Fee Management - Coming Soon
                 </div>
               }
             />
