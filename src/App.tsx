@@ -18,7 +18,17 @@ import FeeManagement from "./pages/FeeManagement";
 import NotFound from "./pages/NotFound";
 import Analytics from "./pages/Analytics";
 import ManageUsers from "./pages/ManageUsers";
-import MyCourses from "./pages/MyCourses";  
+import MyCourses from "./pages/MyCourses";
+import SystemLogs from "./pages/SystemLogs";
+import DepartmentStaff from "./pages/DepartmentStaff";
+import SubjectAssignment from "./pages/SubjectAssignment";
+import StudentManagement from "./pages/StudentManagement";
+import UploadMaterials from "./pages/UploadMaterials";
+import QRAttendance from "./pages/QRAttendance";
+import AIPredictions from "./pages/AIPredictions";
+import StudentQueries from "./pages/StudentQueries";
+import ClassSchedule from "./pages/ClassSchedule";
+import MyAttendance from "./pages/MyAttendance";
 
 const queryClient = new QueryClient();
 
@@ -50,86 +60,16 @@ const App = () => (
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/manage-users" element={<ManageUsers />} />
             <Route path="/my-courses" element={<MyCourses />} />
-            <Route
-              path="/system-logs"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  System Logs - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/department-staff"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Department Staff - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/subject-assignment"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Subject Assignment - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/student-management"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Student Management - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/upload-materials"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Upload Materials - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/qr-attendance"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  QR Attendance - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/ai-predictions"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  AI Predictions - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/student-queries"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Student Queries - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/class-schedule"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Class Schedule - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/my-attendance"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  My Attendance - Coming Soon
-                </div>
-              }
-            />
+            <Route path="/system-logs" element={<SystemLogs />} />
+            <Route path="/department-staff" element={<DepartmentStaff />} />
+            <Route path="/subject-assignment" element={<SubjectAssignment />} />
+            <Route path="/student-management" element={<StudentManagement />} />
+            <Route path="/upload-materials" element={<UploadMaterials />} />
+            <Route path="/qr-attendance" element={<QRAttendance />} />
+            <Route path="/ai-predictions" element={<AIPredictions />} />
+            <Route path="/student-queries" element={<StudentQueries />} />
+            <Route path="/class-schedule" element={<ClassSchedule />} />
+            <Route path="/my-attendance" element={<MyAttendance />} />
             <Route
               path="/fee-payment"
               element={
