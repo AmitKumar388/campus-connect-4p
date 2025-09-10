@@ -29,6 +29,11 @@ import AIPredictions from "./pages/AIPredictions";
 import StudentQueries from "./pages/StudentQueries";
 import ClassSchedule from "./pages/ClassSchedule";
 import MyAttendance from "./pages/MyAttendance";
+import FeePayment from "./pages/FeePayment";
+import MoURequests from "./pages/MoURequests";
+import AIRecommendations from "./pages/AIRecommendations";
+import DocumentManagement from "./pages/DocumentManagement";
+import FileStorage from "./pages/FileStorage";
 
 const queryClient = new QueryClient();
 
@@ -70,46 +75,11 @@ const App = () => (
             <Route path="/student-queries" element={<StudentQueries />} />
             <Route path="/class-schedule" element={<ClassSchedule />} />
             <Route path="/my-attendance" element={<MyAttendance />} />
-            <Route
-              path="/fee-payment"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Fee Payment - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/mou-requests"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  MoU Requests - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/ai-recommendations"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  AI Recommendations - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/document-management"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Document Management - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/file-storage"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  File Storage - Coming Soon
-                </div>
-              }
-            />
+            <Route path="/fee-payment" element={<FeePayment />} />
+            <Route path="/mou-requests" element={<MoURequests />} />
+            <Route path="/ai-recommendations" element={<AIRecommendations />} />
+            <Route path="/document-management" element={<DocumentManagement />} />
+            <Route path="/file-storage" element={<FileStorage />} />
             <Route
               path="/payment-history"
               element={
