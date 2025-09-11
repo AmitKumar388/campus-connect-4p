@@ -15,6 +15,11 @@ import AccountantDashboard from "./pages/dashboards/AccountantDashboard";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import FeeManagement from "./pages/FeeManagement";
+import PaymentHistory from "./pages/PaymentHistory";
+import AIAssistant from "./pages/AIAssistant";
+import InstituteSettings from "./pages/InstituteSettings";
+import AcademicPerformance from "./pages/AcademicPerformance";
+import AcademicCalendar from "./pages/AcademicCalendar";
 import NotFound from "./pages/NotFound";
 import Analytics from "./pages/Analytics";
 import ManageUsers from "./pages/ManageUsers";
@@ -80,46 +85,11 @@ const App = () => (
             <Route path="/ai-recommendations" element={<AIRecommendations />} />
             <Route path="/document-management" element={<DocumentManagement />} />
             <Route path="/file-storage" element={<FileStorage />} />
-            <Route
-              path="/payment-history"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Payment History - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/ai-assistant"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  AI Assistant - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/institute-settings"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Institute Settings - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/academic-performance"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Academic Performance - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/academic-calendar"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Academic Calendar - Coming Soon
-                </div>
-              }
-            />
+            <Route path="/payment-history" element={<PaymentHistory />} />
+            <Route path="/ai-assistant" element={<AIAssistant />} />
+            <Route path="/institute-settings" element={<InstituteSettings />} />
+            <Route path="/academic-performance" element={<AcademicPerformance />} />
+            <Route path="/academic-calendar" element={<AcademicCalendar />} />
             <Route
               path="/department-analytics"
               element={
