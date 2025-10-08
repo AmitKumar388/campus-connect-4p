@@ -39,6 +39,17 @@ import MoURequests from "./pages/MoURequests";
 import AIRecommendations from "./pages/AIRecommendations";
 import DocumentManagement from "./pages/DocumentManagement";
 import FileStorage from "./pages/FileStorage";
+import DepartmentAnalytics from "./pages/DepartmentAnalytics";
+import StudentAssignments from "./pages/StudentAssignments";
+import UserRecords from "./pages/UserRecords";
+import SystemManagement from "./pages/SystemManagement";
+import AdminNotifications from "./pages/AdminNotifications";
+import GenerateReceipts from "./pages/GenerateReceipts";
+import FinancialReports from "./pages/FinancialReports";
+import PaymentReminders from "./pages/PaymentReminders";
+import Assignments from "./pages/Assignments";
+import FacultySchedule from "./pages/FacultySchedule";
+import Help from "./pages/Help";
 
 const queryClient = new QueryClient();
 
@@ -90,97 +101,17 @@ const App = () => (
             <Route path="/institute-settings" element={<InstituteSettings />} />
             <Route path="/academic-performance" element={<AcademicPerformance />} />
             <Route path="/academic-calendar" element={<AcademicCalendar />} />
-            <Route
-              path="/department-analytics"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Department Analytics - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/student-assignments"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Student Assignments - Coming Soon
-                </div>
-              }
-            />
-
-            <Route
-              path="/user-records"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  User Records - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/system-management"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  System Management - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/admin-notifications"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Admin Notification - Coming Soon
-                </div>
-              }
-            />
-
-            <Route
-              path="/generate-receipts"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Generate Receipts - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/financial-reports"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Financial Reports - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/payment-reminders"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Payment Reminder - Coming Soon
-                </div>
-              }
-            />
-
-            <Route
-              path="/assignments"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Assignment - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/faculty-schedule"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Schedule - Coming Soon
-                </div>
-              }
-            />
-            <Route
-              path="/help"
-              element={
-                <div className="p-6 text-center text-muted-foreground">
-                  Help & Support - Coming Soon
-                </div>
-              }
-            />
+            <Route path="/department-analytics" element={<DepartmentAnalytics />} />
+            <Route path="/student-assignments" element={<StudentAssignments />} />
+            <Route path="/user-records" element={<UserRecords />} />
+            <Route path="/system-management" element={<SystemManagement />} />
+            <Route path="/admin-notifications" element={<AdminNotifications />} />
+            <Route path="/generate-receipts" element={<GenerateReceipts />} />
+            <Route path="/financial-reports" element={<FinancialReports />} />
+            <Route path="/payment-reminders" element={<PaymentReminders />} />
+            <Route path="/assignments" element={<Assignments />} />
+            <Route path="/faculty-schedule" element={<FacultySchedule />} />
+            <Route path="/help" element={<Help />} />
           </Route>
 
           {/* Catch-all route */}
