@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { BreadcrumbNav } from '@/components/ui/breadcrumb-nav';
+import { UserDialog } from '@/components/ui/user-dialog';
 import { motion } from 'framer-motion';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Users, 
   UserPlus, 
@@ -24,6 +27,11 @@ import {
 } from 'lucide-react';
 
 const ManageUsers = () => {
+  const { toast } = useToast();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMode, setDialogMode] = useState<'add' | 'edit' | 'view'>('add');
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+
   const userStats = [
     { title: 'Total Users', value: '1,456', icon: Users, color: 'text-primary' },
     { title: 'Active Users', value: '1,289', icon: CheckCircle, color: 'text-success' },
@@ -134,7 +142,14 @@ const ManageUsers = () => {
             <Download className="w-4 h-4 mr-2" />
             Export
           </Button>
-          <Button>
+          <Button 
+            variant="gradient"
+            onClick={() => {
+              setDialogMode('add');
+              setSelectedUser(null);
+              setDialogOpen(true);
+            }}
+          >
             <UserPlus className="w-4 h-4 mr-2" />
             Add User
           </Button>
@@ -274,20 +289,56 @@ const ManageUsers = () => {
 
                   {/* Actions */}
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" className="hover-lift">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="hover-lift"
+                      onClick={() => {
+                        setDialogMode('view');
+                        setSelectedUser(user);
+                        setDialogOpen(true);
+                      }}
+                    >
                       <Eye className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="hover-lift">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="hover-lift"
+                      onClick={() => {
+                        setDialogMode('edit');
+                        setSelectedUser(user);
+                        setDialogOpen(true);
+                      }}
+                    >
                       <Edit className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="hover-lift">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="hover-lift"
+                      onClick={() => {
+                        toast({
+                          title: 'Permissions',
+                          description: 'Manage user permissions and access rights.',
+                        });
+                      }}
+                    >
                       <Shield className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="hover-lift text-destructive">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="hover-lift text-destructive"
+                      onClick={() => {
+                        toast({
+                          title: 'Delete User',
+                          description: `Are you sure you want to delete ${user.name}?`,
+                          variant: 'destructive',
+                        });
+                      }}
+                    >
                       <Trash2 className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm" className="hover-lift">
-                      <MoreHorizontal className="w-4 h-4" />
                     </Button>
                   </div>
                 </motion.div>
@@ -359,6 +410,13 @@ const ManageUsers = () => {
           </Card>
         </motion.div>
       </div>
+
+      <UserDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        mode={dialogMode}
+        user={selectedUser}
+      />
     </motion.div>
   );
 };

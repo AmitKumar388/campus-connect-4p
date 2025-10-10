@@ -62,16 +62,20 @@
     --sidebar-border: 220 15% 88%;
     --sidebar-ring: 220 70% 45%;
 
-    /* Custom Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(45 95% 65%));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+  /* Custom Gradients - Enhanced Modern/Classic */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(45 95% 65%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(220 70% 55%) 50%, hsl(var(--secondary)) 100%);
     --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(220 15% 99%) 100%);
+    --gradient-premium: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(270 70% 55%) 50%, hsl(var(--secondary)) 100%);
+    --gradient-elegant: linear-gradient(to right, hsl(var(--primary) / 0.05), hsl(var(--secondary) / 0.05));
 
-    /* Shadows */
-    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.2);
-    --shadow-card: 0 4px 20px -4px hsl(var(--primary) / 0.1);
-    --shadow-glow: 0 0 30px hsl(var(--primary-glow) / 0.3);
+    /* Shadows - Refined Depth */
+    --shadow-elegant: 0 10px 40px -10px hsl(var(--primary) / 0.25);
+    --shadow-card: 0 4px 20px -4px hsl(var(--primary) / 0.15);
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.4);
+    --shadow-soft: 0 2px 15px -3px hsl(220 15% 30% / 0.1);
+    --shadow-hover: 0 15px 50px -12px hsl(var(--primary) / 0.3);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -214,18 +218,49 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Hover Effects */
+  /* Hover Effects - Enhanced Elegance */
   .hover-lift {
     transition: var(--transition-smooth);
   }
 
   .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-elegant);
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
   }
 
   .hover-glow:hover {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.4);
+    box-shadow: 0 0 25px hsl(var(--primary) / 0.5);
+  }
+
+  .hover-scale {
+    transition: var(--transition-smooth);
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.02);
+  }
+
+  .hover-border {
+    position: relative;
+    transition: var(--transition-smooth);
+  }
+
+  .hover-border::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 2px;
+    background: var(--gradient-primary);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: var(--transition-smooth);
+  }
+
+  .hover-border:hover::after {
+    opacity: 1;
   }
 
   /* Academic Pattern Background */

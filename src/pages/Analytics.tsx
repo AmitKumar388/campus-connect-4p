@@ -3,6 +3,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { BreadcrumbNav } from '@/components/ui/breadcrumb-nav';
 import { motion } from 'framer-motion';
+import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 import { 
   TrendingUp, 
   Users, 
@@ -22,6 +24,9 @@ import {
 } from 'lucide-react';
 
 const Analytics = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
   const analyticsCards = [
     { title: 'Total Students', value: '1,247', change: '+5.2%', icon: Users, trend: 'up' },
     { title: 'Active Courses', value: '89', change: '+2.1%', icon: BookOpen, trend: 'up' },
@@ -282,7 +287,16 @@ const Analytics = () => {
               </div>
               <h3 className="font-semibold text-foreground mb-2">Generate Reports</h3>
               <p className="text-sm text-muted-foreground mb-4">Create detailed analytical reports</p>
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  toast({
+                    title: 'Generating Report',
+                    description: 'Your analytics report is being prepared...',
+                  });
+                }}
+              >
                 <FileText className="w-4 h-4 mr-2" />
                 Create Report
               </Button>
@@ -302,7 +316,11 @@ const Analytics = () => {
               </div>
               <h3 className="font-semibold text-foreground mb-2">Predictive Analytics</h3>
               <p className="text-sm text-muted-foreground mb-4">AI-powered performance predictions</p>
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => navigate('/ai-predictions')}
+              >
                 <Activity className="w-4 h-4 mr-2" />
                 View Predictions
               </Button>
@@ -322,7 +340,16 @@ const Analytics = () => {
               </div>
               <h3 className="font-semibold text-foreground mb-2">Custom Dashboards</h3>
               <p className="text-sm text-muted-foreground mb-4">Build personalized analytics views</p>
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  toast({
+                    title: 'Dashboard Customization',
+                    description: 'Customize your analytics dashboard layout and widgets.',
+                  });
+                }}
+              >
                 <Target className="w-4 h-4 mr-2" />
                 Customize
               </Button>

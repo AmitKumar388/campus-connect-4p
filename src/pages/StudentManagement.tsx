@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { BreadcrumbNav } from '@/components/ui/breadcrumb-nav';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,13 +7,16 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { StudentDialog } from '@/components/ui/student-dialog';
 import { Search, UserPlus, Users, GraduationCap, BookOpen, Mail, Phone, MapPin } from 'lucide-react';
-import { useState } from 'react';
 
 const StudentManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClass, setSelectedClass] = useState('all');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMode, setDialogMode] = useState<'add' | 'edit' | 'view' | 'profile'>('add');
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
 
   const students = [
     {
@@ -88,7 +92,14 @@ const StudentManagement = () => {
           </h1>
           <p className="text-muted-foreground mt-2">Manage student records, enrollment, and academic progress</p>
         </div>
-        <Button className="glass-card">
+        <Button 
+          variant="gradient"
+          onClick={() => {
+            setDialogMode('add');
+            setSelectedStudent(null);
+            setDialogOpen(true);
+          }}
+        >
           <UserPlus className="w-4 h-4 mr-2" />
           Add New Student
         </Button>
@@ -276,9 +287,39 @@ const StudentManagement = () => {
                     </div>
                     
                     <div className="flex gap-2">
-                      <Button variant="ghost" size="sm">View</Button>
-                      <Button variant="ghost" size="sm">Edit</Button>
-                      <Button size="sm" className="glass-card">Profile</Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => {
+                          setDialogMode('view');
+                          setSelectedStudent(student);
+                          setDialogOpen(true);
+                        }}
+                      >
+                        View
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => {
+                          setDialogMode('edit');
+                          setSelectedStudent(student);
+                          setDialogOpen(true);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="elegant"
+                        onClick={() => {
+                          setDialogMode('profile');
+                          setSelectedStudent(student);
+                          setDialogOpen(true);
+                        }}
+                      >
+                        Profile
+                      </Button>
                     </div>
                   </div>
                 </motion.div>
@@ -287,6 +328,13 @@ const StudentManagement = () => {
           </CardContent>
         </Card>
       </motion.div>
+
+      <StudentDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        mode={dialogMode}
+        student={selectedStudent}
+      />
     </motion.div>
   );
 };
