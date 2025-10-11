@@ -27,7 +27,7 @@ const FacultySchedule = () => {
       day: "Wednesday",
       classes: [
         { time: "9:00 - 10:00", subject: "Database Systems", room: "CS-103", class: "CS 4th Year", type: "Lab" },
-        { time: "11:00 - 12:00", subject: "Data Structures", room: "CS-101", class: "CS 3rd Year", type: "Tutorial" },
+        { time: "11:00 - 12:00", subject: "Data structures", room: "CS-101", class: "CS 3rd Year", type: "Tutorial" },
         { time: "14:00 - 15:00", subject: "Algorithms", room: "CS-102", class: "CS 3rd Year", type: "Lecture" },
       ],
     },
