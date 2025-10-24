@@ -63,7 +63,6 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
 
-          {/* Protected Dashboard Routes */}
           <Route path="/dashboard/*" element={<AppLayout />}>
             <Route path="principal" element={<PrincipalDashboard />} />
             <Route path="hod" element={<HODDashboard />} />
@@ -73,7 +72,6 @@ const App = () => (
             <Route path="accountant" element={<AccountantDashboard />} />
           </Route>
 
-          {/* Feature Pages */}
           <Route element={<AppLayout />}>
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
