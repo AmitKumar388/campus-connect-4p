@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,28 +10,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Search, Bell, MessageSquare, Settings, User, Sun, Moon, Monitor } from 'lucide-react';
-import { toast } from 'sonner';
+import { Search, Settings, User } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
-interface User {
-  email: string;
-  role: string;
-  name: string;
-}
-
-interface HeaderProps {
-  user: User;
-}
-
-export const Header = ({ user }: HeaderProps) => {
+export const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, signOut, roles } = useAuth();
 
   const getPageTitle = () => {
     const path = location.pathname;
     if (path.includes('/dashboard/')) {
-      return `${user.role} Dashboard`;
+      const role = roles[0] || 'User';
+      return `${role.charAt(0).toUpperCase() + role.slice(1)} Dashboard`;
     }
     
     const titleMap: Record<string, string> = {
@@ -65,10 +56,8 @@ export const Header = ({ user }: HeaderProps) => {
     return titleMap[path] || 'CampusConnect';
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('campusConnectUser');
-    toast("Logged out successfully. See you soon!");
-    navigate('/login');
+  const handleLogout = async () => {
+    await signOut();
   };
 
   const getCurrentTime = () => {
@@ -127,20 +116,24 @@ export const Header = ({ user }: HeaderProps) => {
               <Button variant="ghost" className="flex items-center gap-3 px-3 py-2 hover:bg-primary/10">
                 <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center">
                   <span className="text-primary-foreground text-sm font-semibold">
-                    {user.name.split(' ').map(n => n[0]).join('')}
+                    {user?.email?.[0]?.toUpperCase() || 'U'}
                   </span>
                 </div>
                 <div className="hidden md:block text-left">
-                  <p className="text-sm font-medium">{user.name}</p>
-                  <p className="text-xs text-muted-foreground">{user.role}</p>
+                  <p className="text-sm font-medium">{user?.email || 'User'}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {roles[0] ? roles[0].charAt(0).toUpperCase() + roles[0].slice(1) : 'User'}
+                  </p>
                 </div>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>
                 <div>
-                  <p className="font-medium">{user.name}</p>
-                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                  <p className="font-medium">{user?.email || 'User'}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {roles.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join(', ') || 'User'}
+                  </p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuItem onClick={() => navigate('/profile')} className='cursor-pointer'>
@@ -152,7 +145,7 @@ export const Header = ({ user }: HeaderProps) => {
                 Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive" onClick={handleLogout}>
+              <DropdownMenuItem className="text-destructive cursor-pointer" onClick={handleLogout}>
                 Sign Out
               </DropdownMenuItem>
             </DropdownMenuContent>

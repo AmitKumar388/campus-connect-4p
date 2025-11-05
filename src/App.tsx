@@ -2,7 +2,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import AppLayout from "./components/layout/AppLayout";
@@ -58,21 +59,20 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/login" element={<Login />} />
 
-          <Route path="/dashboard/*" element={<AppLayout />}>
-            <Route path="principal" element={<PrincipalDashboard />} />
-            <Route path="hod" element={<HODDashboard />} />
-            <Route path="faculty" element={<FacultyDashboard />} />
-            <Route path="student" element={<StudentDashboard />} />
-            <Route path="admin" element={<AdminDashboard />} />
-            <Route path="accountant" element={<AccountantDashboard />} />
-          </Route>
+        <Route path="/dashboard/*" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+          <Route path="principal" element={<PrincipalDashboard />} />
+          <Route path="hod" element={<HODDashboard />} />
+          <Route path="faculty" element={<FacultyDashboard />} />
+          <Route path="student" element={<StudentDashboard />} />
+          <Route path="admin" element={<AdminDashboard />} />
+          <Route path="accountant" element={<AccountantDashboard />} />
+        </Route>
 
-          <Route element={<AppLayout />}>
+        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/fee-management" element={<FeeManagement />} />
@@ -112,10 +112,9 @@ const App = () => (
             <Route path="/help" element={<Help />} />
           </Route>
 
-          {/* Catch-all route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+        {/* Catch-all route */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </TooltipProvider>
   </QueryClientProvider>
 );
