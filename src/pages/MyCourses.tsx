@@ -4,6 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { BreadcrumbNav } from '@/components/ui/breadcrumb-nav';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
 import { 
   BookOpen,
   Clock,
@@ -24,6 +28,40 @@ import {
 } from 'lucide-react';
 
 const MyCourses = () => {
+  const { user } = useAuth();
+  const [materials, setMaterials] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchMaterials();
+  }, []);
+
+  const fetchMaterials = async () => {
+    try {
+      const result = await ((supabase as any)
+        .from('documents')
+        .select('*')
+        .eq('category', 'academic')
+        .order('created_at', { ascending: false }));
+
+      if (result.error) throw result.error;
+      setMaterials(result.data || []);
+    } catch (error: any) {
+      console.error('Error fetching materials:', error);
+      toast.error('Failed to load materials');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDownload = (url: string, name: string) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = name;
+    link.click();
+    toast.success('Download started');
+  };
+
   const courseStats = [
     { title: 'Enrolled Courses', value: '8', icon: BookOpen, color: 'text-primary' },
     { title: 'Completed', value: '3', icon: CheckCircle, color: 'text-success' },
@@ -254,14 +292,24 @@ const MyCourses = () => {
                             </div>
                           </div>
                           
-                          <div className="flex gap-2">
-                            <Button size="sm" variant="outline" className="flex-1">
-                              <ExternalLink className="w-4 h-4 mr-1" />
-                              Open
-                            </Button>
-                            <Button size="sm" variant="outline" className="flex-1">
-                              <Download className="w-4 h-4 mr-1" />
-                              Materials
+                           <div className="flex gap-2">
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="flex-1"
+                              onClick={() => {
+                                const courseMaterials = materials.filter(m => 
+                                  m.tags?.includes(course.title) || m.tags?.includes(course.code)
+                                );
+                                if (courseMaterials.length > 0) {
+                                  toast.success(`Found ${courseMaterials.length} materials`);
+                                } else {
+                                  toast.info('No materials available for this course');
+                                }
+                              }}
+                            >
+                              <FileText className="w-4 h-4 mr-1" />
+                              View Materials
                             </Button>
                           </div>
                         </div>

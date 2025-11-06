@@ -41,8 +41,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               .select('role')
               .eq('user_id', session.user.id);
             
-            if (userRoles) {
-              setRoles(userRoles.map(r => r.role as AppRole));
+            if (userRoles && userRoles.length > 0) {
+              const fetchedRoles = userRoles.map(r => r.role as AppRole);
+              setRoles(fetchedRoles);
+              
+              // Redirect to role-based dashboard after login
+              if (event === 'SIGNED_IN') {
+                const primaryRole = fetchedRoles[0];
+                navigate(`/dashboard/${primaryRole}`);
+              }
             }
           }, 0);
         } else {
@@ -74,7 +81,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate]);
 
   const signIn = async (email: string, password: string) => {
     try {
