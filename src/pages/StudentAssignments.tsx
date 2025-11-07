@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FileText, Upload, Clock, CheckCircle, AlertCircle, Search, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -10,6 +11,7 @@ import { useState } from "react";
 const StudentAssignments = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedAssignment, setSelectedAssignment] = useState<typeof assignments[0] | null>(null);
 
   const assignments = [
     {
@@ -198,7 +200,7 @@ const StudentAssignments = () => {
                         Submit Assignment
                       </Button>
                     )}
-                    <Button variant="outline">View Details</Button>
+                    <Button variant="outline" onClick={() => setSelectedAssignment(assignment)}>View Details</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -260,6 +262,96 @@ const StudentAssignments = () => {
             ))}
           </TabsContent>
         </Tabs>
+
+        {/* Assignment Details Dialog */}
+        <Dialog open={!!selectedAssignment} onOpenChange={() => setSelectedAssignment(null)}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" />
+                {selectedAssignment?.title}
+              </DialogTitle>
+              <DialogDescription>{selectedAssignment?.subject}</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Status</p>
+                  <div className="mt-1">{selectedAssignment && getStatusBadge(selectedAssignment.status)}</div>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Due Date</p>
+                  <p className="mt-1 flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    {selectedAssignment && new Date(selectedAssignment.dueDate).toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Total Marks</p>
+                  <p className="mt-1 text-lg font-semibold">{selectedAssignment?.marks}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Grade</p>
+                  <p className="mt-1 text-lg font-semibold">{selectedAssignment?.grade || 'Not graded yet'}</p>
+                </div>
+              </div>
+
+              {selectedAssignment?.submittedOn && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Submitted On</p>
+                  <p className="mt-1">
+                    {new Date(selectedAssignment.submittedOn).toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </p>
+                </div>
+              )}
+
+              <div>
+                <p className="text-sm font-medium text-muted-foreground mb-2">Assignment Description</p>
+                <Card className="bg-muted/50">
+                  <CardContent className="pt-4">
+                    <p className="text-sm">
+                      This assignment covers the fundamental concepts and practical applications. 
+                      Complete all questions and submit before the deadline. Late submissions may incur penalties.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {selectedAssignment?.status === "graded" && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">Feedback</p>
+                  <Card className="bg-muted/50">
+                    <CardContent className="pt-4">
+                      <p className="text-sm">
+                        Good work! Your understanding of the concepts is clear. Keep up the effort.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
+              <div className="flex gap-2">
+                {selectedAssignment?.status === "pending" && (
+                  <Button className="gap-2">
+                    <Upload className="h-4 w-4" />
+                    Submit Assignment
+                  </Button>
+                )}
+                <Button variant="outline" onClick={() => setSelectedAssignment(null)}>Close</Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
