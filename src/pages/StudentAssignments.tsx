@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { FileText, Upload, Clock, CheckCircle, AlertCircle, Search, Calendar, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const StudentAssignments = () => {
@@ -24,7 +23,7 @@ const StudentAssignments = () => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const assignments = [
+  const [assignments, setAssignments] = useState([
     {
       id: 1,
       title: "Data Structures - Binary Trees",
@@ -34,6 +33,8 @@ const StudentAssignments = () => {
       marks: 25,
       submittedOn: null,
       grade: null,
+      submissionText: null,
+      submissionFile: null,
     },
     {
       id: 2,
@@ -44,6 +45,8 @@ const StudentAssignments = () => {
       marks: 30,
       submittedOn: "2024-03-10",
       grade: null,
+      submissionText: "Completed all circuit diagrams",
+      submissionFile: "circuit_analysis.pdf",
     },
     {
       id: 3,
@@ -54,6 +57,8 @@ const StudentAssignments = () => {
       marks: 20,
       submittedOn: "2024-03-07",
       grade: "18/20",
+      submissionText: "All problems solved",
+      submissionFile: "thermodynamics.pdf",
     },
     {
       id: 4,
@@ -64,8 +69,10 @@ const StudentAssignments = () => {
       marks: 40,
       submittedOn: null,
       grade: null,
+      submissionText: null,
+      submissionFile: null,
     },
-  ];
+  ]);
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { variant: "default" | "secondary" | "destructive" | "outline", icon: any }> = {
@@ -108,44 +115,25 @@ const StudentAssignments = () => {
     }
   };
 
-  const handleSubmitAssignment = async () => {
+  const handleSubmitAssignment = () => {
     if (!submittingAssignment) return;
     
     setUploading(true);
-    try {
-      let fileUrl = null;
-      
-      // Upload file if selected
-      if (selectedFile) {
-        const fileExt = selectedFile.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-        const filePath = `assignments/${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('course-materials')
-          .upload(filePath, selectedFile);
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('course-materials')
-          .getPublicUrl(filePath);
-        
-        fileUrl = publicUrl;
-      }
-
-      // Create submission record
-      const { error: submissionError } = await supabase
-        .from('assignment_submissions')
-        .insert({
-          assignment_id: submittingAssignment.id,
-          student_id: 'current-student-id', // TODO: Get from auth context
-          submission_text: submissionText,
-          submission_url: fileUrl,
-          status: 'submitted',
-        });
-
-      if (submissionError) throw submissionError;
+    
+    // Simulate upload delay
+    setTimeout(() => {
+      // Update assignment status in local state
+      setAssignments(prev => prev.map(assignment => 
+        assignment.id === submittingAssignment.id
+          ? {
+              ...assignment,
+              status: "submitted",
+              submittedOn: new Date().toISOString().split('T')[0],
+              submissionText: submissionText || null,
+              submissionFile: selectedFile?.name || null,
+            }
+          : assignment
+      ));
 
       toast({
         title: "Success!",
@@ -160,16 +148,9 @@ const StudentAssignments = () => {
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
-
-    } catch (error: any) {
-      toast({
-        title: "Submission failed",
-        description: error.message || "Failed to submit assignment",
-        variant: "destructive",
-      });
-    } finally {
+      
       setUploading(false);
-    }
+    }, 1000);
   };
 
   const openSubmissionDialog = (assignment: typeof assignments[0]) => {
@@ -312,7 +293,7 @@ const StudentAssignments = () => {
                 <CardContent>
                   <div className="flex justify-between items-center">
                     <span>Due: {new Date(assignment.dueDate).toLocaleDateString('en-IN')}</span>
-                    <Button className="gap-2">
+                     <Button className="gap-2" onClick={() => openSubmissionDialog(assignment)}>
                       <Upload className="h-4 w-4" />
                       Submit
                     </Button>
