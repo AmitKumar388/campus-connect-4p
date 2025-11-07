@@ -8,179 +8,61 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Upload, FileText, Image, Video, Download, Eye, Trash2, Calendar } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
-import { toast } from 'sonner';
+import { useState } from 'react';
 
 const UploadMaterials = () => {
-  const { user } = useAuth();
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedType, setSelectedType] = useState('');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [documents, setDocuments] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    fetchDocuments();
-  }, []);
-
-  const fetchDocuments = async () => {
-    try {
-      const result = await ((supabase as any)
-        .from('documents')
-        .select('*')
-        .eq('category', 'academic')
-        .order('created_at', { ascending: false })
-        .limit(10));
-
-      if (result.error) throw result.error;
-      setDocuments(result.data || []);
-    } catch (error: any) {
-      console.error('Error fetching documents:', error);
-      toast.error('Failed to load materials');
-    } finally {
-      setLoading(false);
+  const recentUploads = [
+    {
+      id: 1,
+      name: 'Data Structures - Linked Lists.pdf',
+      subject: 'Data Structures',
+      type: 'Notes',
+      size: '2.4 MB',
+      uploadedBy: 'Dr. Priya Sharma',
+      uploadedAt: '2024-01-08 14:30',
+      downloads: 45,
+      fileType: 'pdf'
+    },
+    {
+      id: 2,
+      name: 'Machine Learning Assignment 1.docx',
+      subject: 'Machine Learning',
+      type: 'Assignment',
+      size: '856 KB',
+      uploadedBy: 'Prof. Rahul Patel',
+      uploadedAt: '2024-01-08 12:15',
+      downloads: 23,
+      fileType: 'document'
+    },
+    {
+      id: 3,
+      name: 'Digital Electronics Lab Demo.mp4',
+      subject: 'Digital Electronics',
+      type: 'Video Lecture',
+      size: '125 MB',
+      uploadedBy: 'Dr. Anita Gupta',
+      uploadedAt: '2024-01-08 10:45',
+      downloads: 67,
+      fileType: 'video'
+    },
+    {
+      id: 4,
+      name: 'Algorithm Flowchart.png',
+      subject: 'Algorithms',
+      type: 'Diagram',
+      size: '1.2 MB',
+      uploadedBy: 'Dr. Priya Sharma',
+      uploadedAt: '2024-01-08 09:20',
+      downloads: 34,
+      fileType: 'image'
     }
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      if (selectedFile.size > 100 * 1024 * 1024) {
-        toast.error('File size must be less than 100MB');
-        return;
-      }
-      setFile(selectedFile);
-      toast.success(`Selected: ${selectedFile.name}`);
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!file || !title || !selectedSubject || !selectedType || !user) {
-      toast.error('Please fill all required fields');
-      return;
-    }
-
-    setUploading(true);
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-      const filePath = `${user.id}/${fileName}`;
-
-      // Upload file to storage
-      const { error: uploadError } = await supabase.storage
-        .from('course-materials')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('course-materials')
-        .getPublicUrl(filePath);
-
-      // Create document record
-      const { error: docError } = await supabase
-        .from('documents')
-        .insert({
-          title,
-          description,
-          file_url: publicUrl,
-          file_name: file.name,
-          file_size: file.size,
-          file_type: file.type,
-          category: 'academic',
-          uploaded_by: user.id,
-          tags: [selectedSubject, selectedType]
-        });
-
-      if (docError) throw docError;
-
-      toast.success('Material uploaded successfully!');
-      
-      // Reset form
-      setTitle('');
-      setDescription('');
-      setSelectedSubject('');
-      setSelectedType('');
-      setFile(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-
-      // Refresh documents list
-      fetchDocuments();
-    } catch (error: any) {
-      console.error('Upload error:', error);
-      toast.error(error.message || 'Failed to upload material');
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleDelete = async (docId: string, fileUrl: string) => {
-    if (!confirm('Are you sure you want to delete this material?')) return;
-
-    try {
-      // Extract file path from URL
-      const urlParts = fileUrl.split('/course-materials/');
-      if (urlParts.length > 1) {
-        const filePath = urlParts[1];
-        await supabase.storage.from('course-materials').remove([filePath]);
-      }
-
-      // Delete document record
-      const { error } = await supabase
-        .from('documents')
-        .delete()
-        .eq('id', docId);
-
-      if (error) throw error;
-
-      toast.success('Material deleted successfully');
-      fetchDocuments();
-    } catch (error: any) {
-      console.error('Delete error:', error);
-      toast.error('Failed to delete material');
-    }
-  };
-
-  const recentUploads = documents.map(doc => ({
-    id: doc.id,
-    name: doc.file_name,
-    subject: doc.tags?.[0] || 'N/A',
-    type: doc.tags?.[1] || 'N/A',
-    size: formatFileSize(doc.file_size),
-    uploadedBy: 'Faculty',
-    uploadedAt: new Date(doc.created_at).toLocaleString(),
-    downloads: 0,
-    fileType: getFileTypeFromMime(doc.file_type),
-    fileUrl: doc.file_url
-  }));
+  ];
 
   const subjects = ['Data Structures', 'Machine Learning', 'Digital Electronics', 'Algorithms', 'Database Systems'];
   const materialTypes = ['Notes', 'Assignment', 'Video Lecture', 'Presentation', 'Diagram', 'Lab Manual'];
-
-  const formatFileSize = (bytes: number) => {
-    if (!bytes) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-  };
-
-  const getFileTypeFromMime = (mimeType: string) => {
-    if (!mimeType) return 'document';
-    if (mimeType.startsWith('image/')) return 'image';
-    if (mimeType.startsWith('video/')) return 'video';
-    if (mimeType.includes('pdf')) return 'pdf';
-    return 'document';
-  };
 
   const getFileIcon = (type: string) => {
     switch (type) {
@@ -332,53 +214,26 @@ const UploadMaterials = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="title">Title</Label>
-                <Input 
-                  id="title" 
-                  placeholder="Enter material title" 
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
+                <Input id="title" placeholder="Enter material title" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
-                <Textarea 
-                  id="description" 
-                  placeholder="Enter description (optional)" 
-                  rows={3}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
+                <Textarea id="description" placeholder="Enter description (optional)" rows={3} />
               </div>
 
               <div className="space-y-2">
                 <Label>File Upload</Label>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  onChange={handleFileSelect}
-                  className="hidden"
-                  accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.png,.jpg,.jpeg"
-                />
-                <div 
-                  className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center hover:border-muted-foreground/50 transition-colors cursor-pointer"
-                  onClick={() => fileInputRef.current?.click()}
-                >
+                <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center hover:border-muted-foreground/50 transition-colors cursor-pointer">
                   <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground mb-1">
-                    {file ? file.name : 'Click to upload or drag and drop'}
-                  </p>
+                  <p className="text-sm text-muted-foreground mb-1">Click to upload or drag and drop</p>
                   <p className="text-xs text-muted-foreground">PDF, DOC, PPT, MP4, PNG, JPG (Max 100MB)</p>
                 </div>
               </div>
 
-              <Button 
-                className="w-full glass-card" 
-                onClick={handleUpload}
-                disabled={uploading}
-              >
+              <Button className="w-full glass-card">
                 <Upload className="w-4 h-4 mr-2" />
-                {uploading ? 'Uploading...' : 'Upload Material'}
+                Upload Material
               </Button>
             </CardContent>
           </Card>
@@ -395,13 +250,8 @@ const UploadMaterials = () => {
               <CardTitle>Recent Uploads</CardTitle>
             </CardHeader>
             <CardContent>
-              {loading ? (
-                <div className="text-center py-8 text-muted-foreground">Loading materials...</div>
-              ) : recentUploads.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">No materials uploaded yet</div>
-              ) : (
-                <div className="space-y-4">
-                  {recentUploads.map((file, index) => (
+              <div className="space-y-4">
+                {recentUploads.map((file, index) => (
                   <motion.div
                     key={file.id}
                     className="p-4 border rounded-lg glass-card hover:bg-accent/50 transition-colors"
@@ -424,33 +274,13 @@ const UploadMaterials = () => {
                             </div>
                           </div>
                           <div className="flex gap-1">
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-6 w-6 p-0"
-                              onClick={() => window.open(file.fileUrl, '_blank')}
-                            >
+                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
                               <Eye className="w-3 h-3" />
                             </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-6 w-6 p-0"
-                              onClick={() => {
-                                const link = document.createElement('a');
-                                link.href = file.fileUrl;
-                                link.download = file.name;
-                                link.click();
-                              }}
-                            >
+                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
                               <Download className="w-3 h-3" />
                             </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-6 w-6 p-0 text-destructive"
-                              onClick={() => handleDelete(file.id, file.fileUrl)}
-                            >
+                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-destructive">
                               <Trash2 className="w-3 h-3" />
                             </Button>
                           </div>
@@ -472,9 +302,8 @@ const UploadMaterials = () => {
                       </div>
                     </div>
                   </motion.div>
-                  ))}
-                </div>
-              )}
+                ))}
+              </div>
             </CardContent>
           </Card>
         </motion.div>

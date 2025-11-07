@@ -1,14 +1,14 @@
 import { ReactNode, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
 import { Menu, Bell, MessageSquare } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { NotificationPopup } from '@/components/ui/notification-popup';
 import { MessagePopup } from '@/components/ui/message-popup';
-import { useAuth } from '@/hooks/useAuth';
 
 interface AppLayoutProps {
   children?: ReactNode;
@@ -18,8 +18,18 @@ const AppLayout = ({ children }: AppLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [messageOpen, setMessageOpen] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
-  const { user, roles } = useAuth();
+  const { toast } = useToast();
+
+  // Check if user is logged in
+  const userStr = localStorage.getItem('campusConnectUser');
+  const user = userStr ? JSON.parse(userStr) : null;
+
+  if (!user) {
+    navigate('/login');
+    return null;
+  }
 
   const handleNotificationClick = () => {
     setNotificationOpen(!notificationOpen);
@@ -43,7 +53,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="p-0 w-80">
-          <Sidebar user={{ email: user?.email || '', role: roles[0] || 'user', name: user?.email || '' }} />
+          <Sidebar user={user} />
         </SheetContent>
       </Sheet>
 
@@ -51,13 +61,13 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       <div className="lg:flex">
         {/* Desktop Sidebar */}
         <div className="hidden lg:block w-80 fixed inset-y-0 z-30">
-          <Sidebar user={{ email: user?.email || '', role: roles[0] || 'user', name: user?.email || '' }} />
+          <Sidebar user={user} />
         </div>
 
         {/* Main Content */}
         <div className="lg:ml-80 flex-1">
           {/* Header */}
-          <Header />
+          <Header user={user} />
           
           {/* Quick Action Bar */}
           <div className="sticky top-16 z-20 bg-background/80 backdrop-blur-sm border-b border-border px-4 py-2">
