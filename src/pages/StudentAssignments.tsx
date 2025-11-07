@@ -4,14 +4,25 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { FileText, Upload, Clock, CheckCircle, AlertCircle, Search, Calendar } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { FileText, Upload, Clock, CheckCircle, AlertCircle, Search, Calendar, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const StudentAssignments = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAssignment, setSelectedAssignment] = useState<typeof assignments[0] | null>(null);
+  const [submissionDialog, setSubmissionDialog] = useState(false);
+  const [submittingAssignment, setSubmittingAssignment] = useState<typeof assignments[0] | null>(null);
+  const [submissionText, setSubmissionText] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const assignments = [
     {
@@ -81,6 +92,90 @@ const StudentAssignments = () => {
   const pendingAssignments = filteredAssignments.filter(a => a.status === "pending");
   const submittedAssignments = filteredAssignments.filter(a => a.status === "submitted");
   const gradedAssignments = filteredAssignments.filter(a => a.status === "graded");
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 100 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select a file smaller than 100MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      setSelectedFile(file);
+    }
+  };
+
+  const handleSubmitAssignment = async () => {
+    if (!submittingAssignment) return;
+    
+    setUploading(true);
+    try {
+      let fileUrl = null;
+      
+      // Upload file if selected
+      if (selectedFile) {
+        const fileExt = selectedFile.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `assignments/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('course-materials')
+          .upload(filePath, selectedFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('course-materials')
+          .getPublicUrl(filePath);
+        
+        fileUrl = publicUrl;
+      }
+
+      // Create submission record
+      const { error: submissionError } = await supabase
+        .from('assignment_submissions')
+        .insert({
+          assignment_id: submittingAssignment.id,
+          student_id: 'current-student-id', // TODO: Get from auth context
+          submission_text: submissionText,
+          submission_url: fileUrl,
+          status: 'submitted',
+        });
+
+      if (submissionError) throw submissionError;
+
+      toast({
+        title: "Success!",
+        description: "Assignment submitted successfully",
+      });
+
+      // Reset form
+      setSubmissionDialog(false);
+      setSubmittingAssignment(null);
+      setSubmissionText("");
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+    } catch (error: any) {
+      toast({
+        title: "Submission failed",
+        description: error.message || "Failed to submit assignment",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const openSubmissionDialog = (assignment: typeof assignments[0]) => {
+    setSubmittingAssignment(assignment);
+    setSubmissionDialog(true);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 p-6">
@@ -195,7 +290,7 @@ const StudentAssignments = () => {
                   </div>
                   <div className="flex gap-2">
                     {assignment.status === "pending" && (
-                      <Button className="gap-2">
+                      <Button className="gap-2" onClick={() => openSubmissionDialog(assignment)}>
                         <Upload className="h-4 w-4" />
                         Submit Assignment
                       </Button>
@@ -262,6 +357,110 @@ const StudentAssignments = () => {
             ))}
           </TabsContent>
         </Tabs>
+
+        {/* Submission Dialog */}
+        <Dialog open={submissionDialog} onOpenChange={setSubmissionDialog}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Upload className="h-5 w-5 text-primary" />
+                Submit Assignment
+              </DialogTitle>
+              <DialogDescription>
+                {submittingAssignment?.title} - {submittingAssignment?.subject}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="submission-text">Submission Notes (Optional)</Label>
+                <Textarea
+                  id="submission-text"
+                  placeholder="Add any notes or comments about your submission..."
+                  value={submissionText}
+                  onChange={(e) => setSubmissionText(e.target.value)}
+                  rows={4}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="file-upload">Upload File</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="file-upload"
+                    ref={fileInputRef}
+                    type="file"
+                    onChange={handleFileSelect}
+                    accept=".pdf,.doc,.docx,.txt,.zip,.rar"
+                    className="flex-1"
+                  />
+                  {selectedFile && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => {
+                        setSelectedFile(null);
+                        if (fileInputRef.current) {
+                          fileInputRef.current.value = "";
+                        }
+                      }}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+                {selectedFile && (
+                  <p className="text-sm text-muted-foreground">
+                    Selected: {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                  </p>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Accepted formats: PDF, DOC, DOCX, TXT, ZIP, RAR (Max 100MB)
+                </p>
+              </div>
+
+              <div className="bg-muted/50 p-4 rounded-lg space-y-2">
+                <p className="text-sm font-medium">Assignment Details</p>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <span className="text-muted-foreground">Due Date:</span>
+                    <span className="ml-2 font-medium">
+                      {submittingAssignment && new Date(submittingAssignment.dueDate).toLocaleDateString('en-IN')}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Total Marks:</span>
+                    <span className="ml-2 font-medium">{submittingAssignment?.marks}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-2 justify-end">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setSubmissionDialog(false);
+                    setSubmissionText("");
+                    setSelectedFile(null);
+                    if (fileInputRef.current) {
+                      fileInputRef.current.value = "";
+                    }
+                  }}
+                  disabled={uploading}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleSubmitAssignment}
+                  disabled={uploading || (!submissionText && !selectedFile)}
+                  className="gap-2"
+                >
+                  <Upload className="h-4 w-4" />
+                  {uploading ? "Submitting..." : "Submit Assignment"}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Assignment Details Dialog */}
         <Dialog open={!!selectedAssignment} onOpenChange={() => setSelectedAssignment(null)}>
@@ -342,7 +541,13 @@ const StudentAssignments = () => {
 
               <div className="flex gap-2">
                 {selectedAssignment?.status === "pending" && (
-                  <Button className="gap-2">
+                  <Button 
+                    className="gap-2" 
+                    onClick={() => {
+                      openSubmissionDialog(selectedAssignment);
+                      setSelectedAssignment(null);
+                    }}
+                  >
                     <Upload className="h-4 w-4" />
                     Submit Assignment
                   </Button>
